@@ -1,0 +1,91 @@
+---
+title: "a5"
+author: "Lauren Low"
+date: "10/15/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Question 1
+##Part b
+```{r}
+u = runif(100000)
+x = ifelse(u < 1/4, sqrt(14400*u), ifelse(u < 7/12, (120*u + 30), (100-(50*log((-12/5*u)+(12/5))))))
+hist(breaks = 100, x, main = "250348618", freq = FALSE)
+```
+
+##Part d
+```{r}
+mean(x)
+sd(x)
+y = pmax(50, x)
+mean(y)
+sd(y)
+```
+
+#Question 2
+##Part b
+```{r}
+set.seed(8618)
+num = rpois(1, lambda = 31.13)
+times = sort(runif(num, min = 0, max = 120))
+budget = runif(num, min = 0, max = 120)
+num
+times
+budget
+
+d = data.frame(Arrival.Time = times, Budget = budget)
+d
+```
+
+##Part c
+```{r}
+price = c(250, 275, 302.5, 332.75, 366.025, 402.6275, 442.89025, 487.179275, 535.8972025, 589.48692275, 648.436515025, 713.2791765275, 784.60709418025)
+
+source("simulation.R.txt")
+
+n = 5000
+
+seats_sold = numeric(n)
+for(i in 1:n)
+{
+  num = rpois(1, lambda = 31.13) # num: for this simulation, how many people are turning up
+  t = sort(runif(num, 0, 120)) # put in order, when these 'num' of people arrive
+  b = runif(num, min = 150, max = 800) # for these num of people, how much are they willing to spend?
+  data = data.frame(Arrival.Time = t, Budget = b)
+  seats_sold[i] = 13 - sim.revenue(data, num.items = 13, final.time = 120, price, show.plot = FALSE)$Unsold
+}
+
+head(seats_sold)
+hist(seats_sold, breaks = 8, main = "250348618")
+
+mean(seats_sold)
+sd(seats_sold)
+```
+
+##Part d
+```{r}
+price_mat <- matrix(nrow = 13, ncol = 13)
+price_mat[, 1:13] <- price
+
+seats_sold2 = numeric(n)
+for(i in 1:n)
+{
+  num = rpois(1, lambda = 31.13) # num: for this simulation, how many people are turning up
+  t = sort(runif(num, 0, 120)) # put in order, when these 'num' of people arrive
+  b = runif(num, min = 150, max = 800) # for these num of people, how much are they willing to spend?
+  data = data.frame(Arrival.Time = t, Budget = b)
+  seats_sold2[i] = 13 - sim.revenue(data, num.items = 13, final.time = 120, price_mat, show.plot = FALSE)$Unsold
+}
+
+hist(seats_sold2, breaks = 8, main = "250348618")
+
+mean(seats_sold2)
+sd(seats_sold2)
+```
+
+
+
